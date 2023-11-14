@@ -142,14 +142,22 @@ class TransitionVC: UIViewController {
         view.backgroundColor = .green
         return view
     }()
+    
+    let leftButton = UIButton(type: .system)
+    let rightButton = UIButton(type: .system)
+    
+    var buttonBGView = UIView()
 
     let padding: CGFloat = 100
+    
+    var bgButtonLayout: NSLayoutConstraint!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         view.addSubview(redView)
         view.addSubview(greenView)
+        view.addSubview(buttonBGView)
 
         // Set initial state for the red and green views
         NSLayoutConstraint.activate([
@@ -164,32 +172,60 @@ class TransitionVC: UIViewController {
             greenView.widthAnchor.constraint(equalToConstant: view.frame.width - (2 * padding))
         ])
 
+        buttonBGView.backgroundColor = .blue
+        buttonBGView.translatesAutoresizingMaskIntoConstraints = false
+        
         // Add left and right buttons
-        let leftButton = UIButton(type: .system)
+ 
         leftButton.setTitle("Left", for: .normal)
         leftButton.addTarget(self, action: #selector(leftButtonPressed), for: .touchUpInside)
         leftButton.translatesAutoresizingMaskIntoConstraints = false
+        leftButton.layer.borderColor = UIColor.black.cgColor
         view.addSubview(leftButton)
+        
 
-        let rightButton = UIButton(type: .system)
+
+       
         rightButton.setTitle("Right", for: .normal)
         rightButton.addTarget(self, action: #selector(rightButtonPressed), for: .touchUpInside)
         rightButton.translatesAutoresizingMaskIntoConstraints = false
+        rightButton.layer.borderColor = UIColor.black.cgColor
         view.addSubview(rightButton)
-
+        
+        
+        buttonBGView.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        buttonBGView.widthAnchor.constraint(equalToConstant: 100).isActive = true
+        buttonBGView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+       
+        
+        bgButtonLayout = buttonBGView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: padding)
+        bgButtonLayout.isActive = true
+        
         NSLayoutConstraint.activate([
             leftButton.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             leftButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: padding),
+            leftButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: padding),
+            leftButton.heightAnchor.constraint(equalToConstant: 50),
+            leftButton.widthAnchor.constraint(equalToConstant: 100),
 
             rightButton.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             rightButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -padding),
+            rightButton.heightAnchor.constraint(equalToConstant: 50),
+            rightButton.widthAnchor.constraint(equalToConstant: 100),
         ])
+        
+
     }
 
     @objc func leftButtonPressed() {
         UIView.animate(withDuration: 0.5) {
             self.redView.frame.origin.x = self.padding
             self.greenView.frame.origin.x = self.redView.frame.maxX + self.padding
+            
+        }
+        
+        UIView.animate(withDuration: 0.5) {
+            self.buttonBGView.frame.origin.x = self.leftButton.frame.minX
         }
     }
 
@@ -197,6 +233,11 @@ class TransitionVC: UIViewController {
         UIView.animate(withDuration: 0.5) {
             self.redView.frame.origin.x = -self.view.frame.width + self.padding
             self.greenView.frame.origin.x = self.padding
+            
+        }
+        
+        UIView.animate(withDuration: 0.5) {
+            self.buttonBGView.frame.origin.x = self.rightButton.frame.minX
         }
     }
 }
